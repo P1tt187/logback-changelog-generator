@@ -1,0 +1,37 @@
+name: Generate and Release from Changelog
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  repository-projects: write
+
+jobs:
+  generate-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5
+        with:
+          python-version: '3.x'
+      
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Regenerate CHANGELOG.md
+        run: python3 generator.py
+      
+      - name: Create releases from changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 create-release.py
+        #run: python3 delete-releases.py

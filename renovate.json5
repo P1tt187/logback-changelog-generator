@@ -1,0 +1,21 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>P1tt187/renovate-config",
+    ":automergeAll",
+    ":skipStatusChecks"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update logback version to trigger pipeline",
+      "fileMatch": [
+        "(^|\\/|\\.)VERSION"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>[a-z-]+?))?\\s.+?_VERSION=[\"'](?<currentValue>.+?)[\"']",
+      ],
+      "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
+    }
+  ]
+}
