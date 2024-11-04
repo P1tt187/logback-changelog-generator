@@ -36,11 +36,15 @@ with open("CHANGELOG.md", "w", encoding="utf-8") as changelog:
         release_text = re.sub(r'\s+', ' ', release_text)  # Replace all whitespace sequences with a single space
         
         # Split release text to extract date and description
-        try:
-            date_part, release_part = release_text.split(" - ", 1)
+        
+        pattern = re.compile( r"(?P<date_part>\d{4}-\d{1,2}-\d{1,2})\s+-?\s*(?P<release_part>.+?)$")            
+        match = pattern.search(release_text)
+        if match is not None:
+            date_part = match.group('date_part')
+            release_part = match.group('release_part')            
             version = header.get('name')  # Get version from the 'name' attribute
             release_info = f"{version} - {date_part} - {release_part}"
-        except ValueError:
+        else: 
             release_info = release_text  # Fallback if splitting fails
         
         # Write the release heading in markdown format
